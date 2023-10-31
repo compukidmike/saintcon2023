@@ -1,6 +1,6 @@
 # Saintcon 2023 Badge
 
-# Flashing your badge
+# Updating your badge firmware
 There are multiple ways to get new firmware on your badge. If you have access to your WiFi equipment, the easiest method may be to set up an SSID that matches the conference badge network. Then your badge should automatically connect to it and grab the newest firmware from the badge server. The SSID is **BadgeNet-OutOfScope** and the password is **compukidmikeismycopilot**
 
 You can also manually flash your badge over USB. This will require python and esptool, both of which are free to download/use.  
