@@ -1,6 +1,7 @@
 # Saintcon 2023 Badge
 
 # Updating your badge firmware
+**The current firmware version is V1.4 which adds the ability to create parties remotely with codes**
 There are multiple ways to get new firmware on your badge. If you have access to your WiFi equipment, the easiest method may be to set up an SSID that matches the conference badge network. Then your badge should automatically connect to it and grab the newest firmware from the badge server. The SSID is **BadgeNet-OutOfScope** and the password is **compukidmikeismycopilot**
 
 You can also manually flash your badge over USB. This will require python and esptool, both of which are free to download/use.  
@@ -10,7 +11,7 @@ If you're using Windows, python is available from the windows store or you can d
 
 Once you have python installed, open a terminal/command prompt and type "pip install esptool"
 
-Now grab the firmware.bin file from this repo and use the following command to flash the firmware to your badge, substituting the firmware.bin file location.  
+Now grab the firmware.bin file from this repo (/Firmware/Compiled/) and use the following command to flash the firmware to your badge, substituting the firmware.bin file location.  
 `esptool write_flash 0x10000 firmware.bin`  
 NOTE: depending on where you installed python and esptool from, you may have to replace it with esptool.py or esptool.py.exe. You may also have to add the python/pip script directory to your PATH
 
