@@ -250,7 +250,7 @@ bool ConfigWifi() {
         return false;
     }
     
-    String password = EntryScreen("Wifi Password", 50, "").Run();
+    String password = EntryScreen("Wifi Password", 50, "").Run(1);
     gfx->setTextSize(1);
     gfx->setTextColor(0xFFFF);
     gfx->setCursor(10, 230);
