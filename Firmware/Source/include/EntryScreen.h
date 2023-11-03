@@ -13,7 +13,7 @@ public:
     virtual String Run();
 
     bool Update();
-    void Draw();
+    void Draw(int keyBoardType = 0);
     String GetInput() {return text;};
 
 protected:
