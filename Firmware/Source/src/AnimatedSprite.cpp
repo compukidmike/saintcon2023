@@ -151,7 +151,7 @@ void AnimatedSprite::SetGif(String name) {
     else if (name.equals("Kampf"))  SetGif((uint8_t*)Kampf, KAMPF_SIZE);
     else if (name.equals("Katie"))  SetGif((uint8_t*)Katie, KATIE_SIZE);
     else if (name.equals("Klippy"))  SetGif((uint8_t*)Klippy, KLIPPY_SIZE);
-    else if (name.equals("Klipper"))  SetGif((uint8_t*)Kilpper, KLIPPER_SIZE);
+    else if (name.equals("Klipper"))  SetGif((uint8_t*)Klipper, KLIPPER_SIZE);
     else if (name.equals("Pali"))  SetGif((uint8_t*)Pali, PALI_SIZE);
     else if (name.equals("Pope"))  SetGif((uint8_t*)Pope, POPE_SIZE);
     else if (name.equals("Ray-man"))  SetGif((uint8_t*)Rayman, RAYMAN_SIZE);
