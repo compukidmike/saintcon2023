@@ -10,10 +10,10 @@ public:
     ~EntryScreen() {};
 
 
-    virtual String Run();
+    virtual String Run(int wifiEntry = 0);
 
-    bool Update();
-    void Draw();
+    bool Update(int wifiEntry = 0);
+    void Draw(int keyBoardType = 0, int wifiEntry = 0);
     String GetInput() {return text;};
 
 protected:
