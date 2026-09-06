@@ -180,17 +180,23 @@ bool WifiEnable() {
         return true;
     String ssid =  EEPROM.readString(SSID_ADDRESS);    
     String password = EEPROM.readString(PASSWORD_ADDRESS);
-    if (WifiConnect(ssid, password))
+    if (ssid.length() > 0 && WifiConnect(ssid, password))
         return true;
-    ErrorScreen("WiFi Connection Error", "Could not connect").Run();
+    // Soft-fail: no blocking ErrorScreen — badge can run offline / demo
+    leds[WIFI_LED] = CRGB::Black;
+    FastLED.show();
+    puts("WiFi unavailable (continuing offline)");
     return false;
 }
 
 
 bool WifiConnect(String ssid, String password) {
+    if (ssid.length() == 0)
+        return false;
     puts("Starting Wifi");
     WiFi.begin(ssid.c_str(), password.c_str());
     int wificonncounter = 0;
+    // ~5s max (was ~15s of red LED blinking)
     while(WiFi.status() != WL_CONNECTED){
         leds[WIFI_LED] = CRGB::Red;
         FastLED.show();
@@ -199,10 +205,12 @@ bool WifiConnect(String ssid, String password) {
         FastLED.show();
         delay(100);
         wificonncounter ++;
-        if(wificonncounter > 75){
+        if(wificonncounter > 25){
             return false;
         }
     }
+    leds[WIFI_LED] = CRGB::Green;
+    FastLED.show();
     return true;
 }
 

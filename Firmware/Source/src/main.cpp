@@ -25,6 +25,7 @@ float firmwareVersion = 1.4;
 #include "utils.h"
 #include "vending.h"
 #include "LevelManager.h"
+#include "AttractScreen.h"
 
 
 static const char *updateURL = "https://sc23-api.redactd.net:8443/badge/firmware";
@@ -228,10 +229,11 @@ void setup() {
   WiFi.disconnect();
   WiFi.setAutoReconnect(true);
   
-  if (!WifiEnable()) {
-    if (!ConfigWifi()) {
-      ESP.restart();
-    }
+  // Soft-fail WiFi: never block boot with ErrorScreen / forced ConfigWifi.
+  // Online features stay available when WiFi works; demo/menu work offline.
+  bool wifi_ok = WifiEnable();
+  if (!wifi_ok) {
+    puts("Booting offline — skip update check / badge sign-in");
   }
 
   InitAudio();
@@ -242,7 +244,7 @@ void setup() {
 
   HttpsOTA.onHttpEvent(HttpEvent);
 
-  if(RequestFirmwareVersion()){
+  if (wifi_ok && RequestFirmwareVersion()){
     puts("Starting OTA Update");
     gfx->fillScreen(0xf800);
     gfx->setTextSize(3);
@@ -296,7 +298,8 @@ void setup() {
     }
   }
   
-  RequestLoadBadge();
+  if (wifi_ok)
+    RequestLoadBadge();
 }
 
 void loop() {
@@ -304,6 +307,7 @@ void loop() {
   Menu mmenu;
   mmenu.SetTitle("Main Menu");
   mmenu.AllowEscape(false);
+  mmenu.SetAttractIdle(ATTRACT_IDLE_MS);  // demo after 15s idle on main menu
   mmenu.AddOption("Incidents");
   mmenu.AddOption("Party");
   mmenu.AddOption("Inventory");
@@ -349,15 +353,18 @@ void periodicEvents(void * pvParameters){
   xLastWakeTime = xTaskGetTickCount();
 
   while (1){ 
-    ScanMinibadges();
+    // Pause minibadge scanning / badge busywork during attract demo
+    if (!demoModeActive) {
+      ScanMinibadges();
 
-    //Update Minibadge CLK pin
-    if(digitalRead(MINIBADGE_CLK_CTRL_H_PIN)){
-      digitalWrite(MINIBADGE_CLK_CTRL_H_PIN, LOW);
-      digitalWrite(MINIBADGE_CLK_CTRL_L_PIN, HIGH);
-    } else {
-      digitalWrite(MINIBADGE_CLK_CTRL_H_PIN, HIGH);
-      digitalWrite(MINIBADGE_CLK_CTRL_L_PIN, LOW);
+      //Update Minibadge CLK pin
+      if(digitalRead(MINIBADGE_CLK_CTRL_H_PIN)){
+        digitalWrite(MINIBADGE_CLK_CTRL_H_PIN, LOW);
+        digitalWrite(MINIBADGE_CLK_CTRL_L_PIN, HIGH);
+      } else {
+        digitalWrite(MINIBADGE_CLK_CTRL_H_PIN, HIGH);
+        digitalWrite(MINIBADGE_CLK_CTRL_L_PIN, LOW);
+      }
     }
 
     //Wait for the next 1 second interval

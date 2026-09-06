@@ -6,6 +6,7 @@
 #include "assets/heros/out.h"
 #include <Arduino_GFX_Library.h>
 #include "assets/heros/miniico.h"
+#include "gfx_util.h"
 
 extern Arduino_Canvas *gfx;
 
@@ -44,20 +45,20 @@ public:
             bool ret= AnimatedSprite::Draw(x,y);
             switch (action) {
                 case Attack:
-                gfx->draw16bitRGBBitmapWithTranColor(x, y, (uint16_t*)mini_attack_ico, 0xf81f, 8, 8);
+                gfxDraw16bitRGBBitmapWithTranColor(gfx, x, y, (uint16_t*)mini_attack_ico, 0xf81f, 8, 8);
                 break;
                 case Cower:
-                gfx->draw16bitRGBBitmapWithTranColor(x, y, (uint16_t*)mini_defend_ico, 0xf81f, 8, 8);
+                gfxDraw16bitRGBBitmapWithTranColor(gfx, x, y, (uint16_t*)mini_defend_ico, 0xf81f, 8, 8);
                 break;
                 case Item:
-                gfx->draw16bitRGBBitmapWithTranColor(x, y, (uint16_t*)mini_item_ico, 0xf81f, 8, 8);
+                gfxDraw16bitRGBBitmapWithTranColor(gfx, x, y, (uint16_t*)mini_item_ico, 0xf81f, 8, 8);
                 break;
             }
             return ret;
         }
         else {
             bool ret = AnimatedSprite::Draw(x,y);
-            gfx->draw16bitRGBBitmapWithTranColor(x+20, y, (uint16_t*)out_img, 0xf81f, OUT_IMG_WIDTH, OUT_IMG_HEIGHT);
+            gfxDraw16bitRGBBitmapWithTranColor(gfx, x+20, y, (uint16_t*)out_img, 0xf81f, OUT_IMG_WIDTH, OUT_IMG_HEIGHT);
             return ret;
         }
     };
