@@ -1,7 +1,7 @@
 #ifndef _KEYBOARD_H_
 #define _KEYBOARD_H_
 
-#include <arduino.h>
+#include <Arduino.h>
 
 #define KEY_UP      0
 #define KEY_DOWN    1

@@ -3,6 +3,7 @@
 #include <Arduino_GFX_Library.h>
 #include <Wire.h>
 #include <WiFi.h>
+#include <WebServer.h>
 #include <HTTPClient.h>
 #include <sclogo.h>
 #include <FS.h>
