@@ -9,6 +9,7 @@
 #include "assets/ui/committee.h"
 #include <vector>
 #include"AnimatedSprite.h"
+#include "gfx_util.h"
 
 extern Arduino_Canvas *gfx;
 
@@ -32,11 +33,11 @@ public:
         gfx->fillRect(x-3, y-3, width+3, height+3, bg);
         gfx->fillRect(x+12, y+height, width-12, 7, bg);
         gfx->fillRect(x+width, y+12, 7, height-12, bg);
-        gfx->draw16bitRGBBitmapWithTranColor(x-12, y-12, (uint16_t*)wind_top, tc, WIND_TOP_WIDTH, WIND_TOP_HEIGHT);
-        gfx->draw16bitRGBBitmapWithTranColor(x-12, y, (uint16_t*)wind_left, tc, WIND_LEFT_WIDTH, WIND_LEFT_HEIGHT);
-        gfx->draw16bitRGBBitmapWithTranColor(x+width, y-12, (uint16_t*)wind_right, tc, WIND_RIGHT_WIDTH, WIND_RIGHT_HEIGHT);
-        gfx->draw16bitRGBBitmapWithTranColor(x-12, y+height, (uint16_t*)wind_bot, tc, WIND_BOT_WIDTH, WIND_BOT_HEIGHT);
-        gfx->draw16bitRGBBitmapWithTranColor(x+width, y+height, (uint16_t*)wind_botright, tc, WIND_BOTRIGHT_WIDTH, WIND_BOTRIGHT_HEIGHT);
+        gfxDraw16bitRGBBitmapWithTranColor(gfx, x-12, y-12, (uint16_t*)wind_top, tc, WIND_TOP_WIDTH, WIND_TOP_HEIGHT);
+        gfxDraw16bitRGBBitmapWithTranColor(gfx, x-12, y, (uint16_t*)wind_left, tc, WIND_LEFT_WIDTH, WIND_LEFT_HEIGHT);
+        gfxDraw16bitRGBBitmapWithTranColor(gfx, x+width, y-12, (uint16_t*)wind_right, tc, WIND_RIGHT_WIDTH, WIND_RIGHT_HEIGHT);
+        gfxDraw16bitRGBBitmapWithTranColor(gfx, x-12, y+height, (uint16_t*)wind_bot, tc, WIND_BOT_WIDTH, WIND_BOT_HEIGHT);
+        gfxDraw16bitRGBBitmapWithTranColor(gfx, x+width, y+height, (uint16_t*)wind_botright, tc, WIND_BOTRIGHT_WIDTH, WIND_BOTRIGHT_HEIGHT);
         gfx->drawFastHLine(x+72, y-4, width-72, fc);
         gfx->drawFastHLine(x+72, y-5, width-72, 0);
         gfx->drawFastHLine(x+12, y+height+7, width-12, fc);

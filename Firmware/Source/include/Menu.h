@@ -5,6 +5,7 @@
 #include <Arduino.h>
 #include <Window.hpp>
 #include "badge.h"
+#include "AttractScreen.h"
 
 extern void setLCDBacklight(uint8_t level);
 extern unsigned long lastButtonPress;
@@ -13,14 +14,11 @@ extern int screenOffDelay;
 
 class Menu : public Window {
 public:
-    Menu() : selected(0), wind_width(16), can_escape(false) {};
+    Menu() : selected(0), wind_width(16), can_escape(false), attractIdleMs(0) {};
     ~Menu() {};
 
     void AddOption(String item) {
-        uint16_t x1,y1;
-        int16_t w1,h1;
         int iwidth = (item.length()+1) * 12;
-        //gfx->getTextBounds(item, 10, 10, &x1, &y1, &w1, &h1);
         if (iwidth > wind_width)
             wind_width = iwidth;
         options.push_back(item);
@@ -33,6 +31,8 @@ public:
 
     void SetTitle(String t) { title = t;}
     void SetSelected(int s) {selected = s;};
+    /** Enable attract demo after idleMs of no input (0 = disabled). Main menu only. */
+    void SetAttractIdle(unsigned long idleMs) { attractIdleMs = idleMs; };
 
     void ChangeSelected(int delta) {
         selected += delta + options.size();
@@ -74,18 +74,34 @@ public:
 
     bool Update() {
         int count = options.size();
-        if (keyboard.KeyPressEvent(KEY_UP)) 
+        bool activity = false;
+        if (keyboard.KeyPressEvent(KEY_UP)) {
             selected = selected + count - 1;
-        if (keyboard.KeyPressEvent(KEY_DOWN))
+            activity = true;
+        }
+        if (keyboard.KeyPressEvent(KEY_DOWN)) {
             selected++;
+            activity = true;
+        }
         if (selected >= count)
             selected -= count;
-        if (keyboard.KeyPressEvent(KEY_A))
-            return true;
-        if (can_escape && keyboard.KeyPressEvent(KEY_B)) {
-            selected = -1;
+        if (keyboard.KeyPressEvent(KEY_LEFT) || keyboard.KeyPressEvent(KEY_RIGHT) ||
+            keyboard.KeyPressEvent(KEY_JOY)) {
+            activity = true;
+        }
+        if (keyboard.KeyPressEvent(KEY_A)) {
+            lastButtonPress = millis();
             return true;
         }
+        if (can_escape && keyboard.KeyPressEvent(KEY_B)) {
+            selected = -1;
+            lastButtonPress = millis();
+            return true;
+        }
+        if (keyboard.KeyPressEvent(KEY_B))
+            activity = true;
+        if (activity)
+            lastButtonPress = millis();
         return false;
     };
 
@@ -97,10 +113,26 @@ public:
             if (Update()) {
                 return GetSelected();
             }
+
+            // Main-menu attract: idle → demo (skips screen-off / wifi-kill)
+            if (attractIdleMs > 0 && (millis() - lastButtonPress > attractIdleMs)) {
+                AttractScreenRun();
+                keyboard.ClearEvents();
+                lastButtonPress = millis();
+                wifiup = true;
+                setLCDBacklight(128);
+                gfx->displayOn();
+                continue;
+            }
+
             Draw();
             gfx->flush();
-            if(millis() - lastButtonPress > screenDimDelay){
-                if(millis() - lastButtonPress > screenOffDelay){
+
+            if (attractIdleMs > 0) {
+                // Stay full-bright until attract; never dim / kill WiFi on main menu.
+                setLCDBacklight(128);
+            } else if (millis() - lastButtonPress > screenDimDelay) {
+                if (millis() - lastButtonPress > screenOffDelay) {
                     setLCDBacklight(0);
                     if (wifiup) {
                         WifiDisable();
@@ -113,8 +145,8 @@ public:
             } else {
                 setLCDBacklight(128);
                 if (!wifiup) {
-                    if (!WifiEnable())
-                        ESP.restart();
+                    // Soft re-enable — never block with ErrorScreen / restart
+                    WifiEnable();
                     wifiup = true;
                     gfx->displayOn();
                 }
@@ -127,6 +159,7 @@ private:
     bool can_escape;
     std::vector<String> options;
     int selected, wind_width;
+    unsigned long attractIdleMs;
 };
 
 #endif

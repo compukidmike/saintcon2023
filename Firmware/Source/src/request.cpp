@@ -146,7 +146,6 @@ bool RequestLoadBadge() {
     for (int i=0; i<3; ++i) {
         StaticJsonDocument<512> doc;
         if (!RequestSendRaw("/badge/whois", doc)) { //No internet
-            ErrorScreen("Unable to contact server", RequestGetError());
             return false;
         }
         RequestWaitingScreen("Signing in");
@@ -170,7 +169,6 @@ bool RequestLoadBadge() {
             }
         }
     }
-    ErrorScreen("Internet connection down", "Unable to contact server");
     return false;
 }
 
@@ -292,7 +290,6 @@ bool RequestGetVendCode(uint lifespan) {
 bool RequestFirmwareVersion(){
     StaticJsonDocument<256> doc;
         if (!RequestSendRaw("/badge/firmware_version", doc)) { //No internet
-            ErrorScreen("Unable to contact server", RequestGetError());
             return false;
         }
         RequestWaitingScreen("Checking for updates");
@@ -305,7 +302,6 @@ bool RequestFirmwareVersion(){
                 return false;
             }
         }
-    ErrorScreen("Internet connection down", "Unable to contact server");
     return false;
 }
 

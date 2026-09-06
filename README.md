@@ -1,5 +1,12 @@
 # Saintcon 2023 Badge
 
+# Attract / demo mode (optional)
+Leave the badge on the main menu for **15 seconds** and it plays an arcade-style attract loop (battles, inventory, committee faces, LEDs). Any button exits back to the menu — original firmware behavior is still there.
+
+**Easy flash:** see [`Firmware/Compiled/attract-mode/FLASH.md`](Firmware/Compiled/attract-mode/FLASH.md)  
+Quick full image: `esptool.py --chip esp32s3 write_flash 0x0 Firmware/Compiled/attract-mode/saintcon2023-attract-full.bin`  
+Or use [Adafruit WebSerial ESPTool](https://adafruit.github.io/Adafruit_WebSerial_ESPTool/) and flash that bin at offset `0x0`.
+
 # Updating your badge firmware
 **The current firmware version is V1.4 which adds the ability to create parties remotely with codes**  
 
